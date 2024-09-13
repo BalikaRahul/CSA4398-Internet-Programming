@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Tax Calculation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .results p {
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        .logout {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .logout a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .logout a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Calculate Your Income Tax</h1>
+        <form id="taxForm">
+            <div class="form-group">
+                <label for="annualSalary">Annual Salary:</label>
+                <input type="number" id="annualSalary" name="annualSalary" required>
+            </div>
+            <div class="form-group">
+                <label for="bonuses">Bonuses:</label>
+                <input type="number" id="bonuses" name="bonuses" required>
+            </div>
+            <div class="form-group">
+                <label for="otherIncome">Other Taxable Income:</label>
+                <input type="number" id="otherIncome" name="otherIncome" required>
+            </div>
+            <div class="form-group">
+                <label for="houseRentAllowance">House Rent Allowance:</label>
+                <input type="number" id="houseRentAllowance" name="houseRentAllowance" required>
+            </div>
+            <div class="form-group">
+                <label for="pension">Pension:</label>
+                <input type="number" id="pension" name="pension" required>
+            </div>
+            <div class="form-group">
+                <label for="healthInsurance">Health Insurance:</label>
+                <input type="number" id="healthInsurance" name="healthInsurance" required>
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="calculateTax()">Calculate Tax</button>
+            </div>
+        </form>
+
+        <div id="results" class="results"></div>
+
+        <div class="logout">
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        function calculateTax() {
+            const annualSalary = parseFloat(document.getElementById('annualSalary').value);
+            const bonuses = parseFloat(document.getElementById('bonuses').value);
+            const otherIncome = parseFloat(document.getElementById('otherIncome').value);
+            const houseRentAllowance = parseFloat(document.getElementById('houseRentAllowance').value);
+            const pension = parseFloat(document.getElementById('pension').value);
+            const healthInsurance = parseFloat(document.getElementById('healthInsurance').value);
+
+            // Calculate Net Taxable Income
+            const grossPay = annualSalary + bonuses + otherIncome;
+            const pensionDeduction = Math.min(pension * 12, 150000);
+            const netTaxableIncome = grossPay - (houseRentAllowance * 12) - 50000 - pensionDeduction - (healthInsurance * 12);
+
+            let tax = 0;
+
+            if (netTaxableIncome > 1000000) {
+                tax = 112500 + 0.30 * (netTaxableIncome - 1000000);
+            } else if (netTaxableIncome > 500000) {
+                tax = 12500 + 0.20 * (netTaxableIncome - 500000);
+            } else if (netTaxableIncome > 250000) {
+                tax = 0.05 * (netTaxableIncome - 250000);
+            }
+
+            const netIncomeAfterTax = grossPay - tax;
+
+            // Display Results
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <p>Total Tax Liability: ₹${tax.toFixed(2)}</p>
+                <p>Net Income After Tax: ₹${netIncomeAfterTax.toFixed(2)}</p>
+                <p><a href="#" onclick="downloadSummary()">Download Summary Report</a></p>
+            `;
+        }
+
+        function downloadSummary() {
+            // Simple download simulation
+            alert('Summary report downloaded successfully!');
+        }
+    </script>
+
+</body>
+</html>
